@@ -1,19 +1,20 @@
 <template>
   <div class="app-container-flex">
     <div class="left">
-      <el-tree :data="deps" @node-click="depClick" >
-        <span class="custom-tree-node" slot-scope="{ node, data }" >
-          <i class="fa fa-male"></i>&nbsp;&nbsp;
-          <span>【{{data.depno}}】{{ data.depname }}</span>
+      <el-tree :data="deps" @node-click="depClick">
+        <span slot-scope="{ node, data }" class="custom-tree-node">
+          <i class="fa fa-male" />&nbsp;&nbsp;
+          <span>【{{ data.depno }}】{{ data.depname }}</span>
         </span>
       </el-tree>
     </div>
     <div class="right">
       <div class="header">
         <el-row class="filter">
-          <el-col :span="8" >
+          <el-col :span="8">
             <el-input v-model="params.empname" placeholder="请输入员工名" style="width: 200px;" class="filter-item"
-                      @keyup.enter.native="filter"/>
+                      @keyup.enter.native="filter"
+            />
             <el-button type="primary" size="small" icon="el-icon-search" style="margin: 5px;" @click="loadEmps">
               搜索
             </el-button>
@@ -22,23 +23,23 @@
         <el-row class="operation">
           <el-col :span="4">
             <el-button-group>
-              <el-button type="primary" size="mini" icon="el-icon-plus" @click="add"></el-button>
-              <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteBatch"></el-button>
-              <el-button type="success" size="mini" icon="el-icon-refresh" @click="loadEmps"></el-button>
+              <el-button type="primary" size="mini" icon="el-icon-plus" @click="add" />
+              <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteBatch" />
+              <el-button type="success" size="mini" icon="el-icon-refresh" @click="loadEmps" />
             </el-button-group>
           </el-col>
         </el-row>
       </div>
-      <el-table :data="emps" row-key="id" v-loading="loading_query" @selection-change="selectRows">
-        <el-table-column prop="id" type="selection" width="60" align="center"></el-table-column>
+      <el-table v-loading="loading_query" :data="emps" row-key="id" @selection-change="selectRows">
+        <el-table-column prop="id" type="selection" width="60" align="center" />
         <el-table-column prop="empno" label="员工编号" />
         <el-table-column prop="empname" label="员工姓名" />
         <el-table-column prop="depname" label="所属机构" />
-        <el-table-column prop="sortno" width="100" label="序号" align="center"/>
+        <el-table-column prop="sortno" width="100" label="序号" align="center" />
         <el-table-column label="操作" align="center">
-          <template slot-scope="{row, index}" >
+          <template slot-scope="{row, index}">
             <el-button type="success" size="mini" icon="el-icon-edit" @click="edit(row, index)">编辑</el-button>
-            <el-button type="danger" size="mini" icon="el-icon-delete" @click="del(row, index)" >删除</el-button>
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click="del(row, index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -47,11 +48,12 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" v-loading="loading_save" :rules="rules" :model="bizdata" label-position="left"
                label-width="150px"
-               element-loading-text="正在保存" >
+               element-loading-text="正在保存"
+      >
         <el-form-item label="所属机构" prop="departmentid">
-          <el-cascader v-model="bizdata.departmentid" :options="deps" clearable @change="depChange"
-              :props="{ value: 'id', label: 'depname', checkStrictly: true }" style="width: 500px;">
-          </el-cascader>
+          <el-cascader v-model="bizdata.departmentid" :options="deps" clearable :props="{ value: 'id', label: 'depname', checkStrictly: true, emitPath: false }"
+                       style="width: 500px;"
+          />
         </el-form-item>
         <el-form-item label="员工编号" prop="empno">
           <el-input v-model="bizdata.empno" style="width: 300px;" />
@@ -60,10 +62,11 @@
           <el-input v-model="bizdata.empname" style="width: 300px;" />
         </el-form-item>
         <el-form-item label="岗位" prop="posids">
-          <el-select v-model="bizdata.posids" :loading="loading_pos" @focus="loadPositions"
-                     multiple filterable allow-create placeholder="请选择岗位" style="width: 500px;">
-            <el-option v-for="item in positions" :key="item.positionid" :label="item.posname" :value="item.id" >
-              <span style="float: left">【{{item.depname}}】{{ item.posname }}</span>
+          <el-select v-model="bizdata.posids" :loading="loading_pos" multiple
+                     filterable allow-create placeholder="请选择岗位" style="width: 500px;" @focus="loadPositions"
+          >
+            <el-option v-for="item in positions" :key="item.positionid" :label="item.posname" :value="item.positionid">
+              <span style="float: left">【{{ item.depname }}】{{ item.posname }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -138,7 +141,7 @@
           url: '/department/getDepTree',
           method: 'post'
         }).then(res => {
-          this.deps = res.bizdatas
+          this.deps = res
         })
       },
       loadEmps() {
@@ -164,7 +167,7 @@
           method: 'post'
         }).then(res => {
           this.loading_pos = false
-          this.positions = res.bizdatas
+          this.positions = res
         })
       },
       depClick(node) {
@@ -175,13 +178,6 @@
       },
       selectRows(rows) {
         this.selectedRows = rows
-      },
-      depChange(arr){
-        if (arr.length > 1) {
-          this.bizdata.departmentid = arr[arr.length - 1]
-        } else {
-          this.bizdata.departmentid = undefined
-        }
       },
       add() {
         this.bizdata = {departmentid: this.params.depid}
@@ -221,8 +217,8 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-           url: '/employee/del?ids=' + row.id,
-           method: 'post'
+            url: '/employee/del?ids=' + row.id,
+            method: 'post'
           }).then(res => {
             this.loadEmps()
           })
@@ -248,7 +244,8 @@
             url: '/employee/del?ids=' + ids,
             method: 'post'
           }).then(res => {
-           this.loadEmps()
+            console.log(res)
+            this.loadEmps()
           })
         })
       }

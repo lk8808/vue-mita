@@ -2,9 +2,10 @@
   <div class="app-container">
     <div class="header">
       <el-row class="filter">
-        <el-col :span="8" >
+        <el-col :span="8">
           <el-input v-model="params.appname" placeholder="请输入应用名" style="width: 200px;" class="filter-item"
-                    @keyup.enter.native="loadData"/>
+                    @keyup.enter.native="loadData"
+          />
           <el-button type="primary" size="small" icon="el-icon-search" style="margin: 5px;" @click="loadData">
             搜索
           </el-button>
@@ -13,16 +14,17 @@
       <el-row class="operation">
         <el-col :span="4">
           <el-button-group>
-            <el-button type="primary" size="mini" icon="el-icon-plus" @click="add"></el-button>
-            <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteBatch"></el-button>
+            <el-button type="primary" size="mini" icon="el-icon-plus" @click="add" />
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteBatch" />
           </el-button-group>
         </el-col>
       </el-row>
     </div>
     <el-table v-loading="loading_query" :data="bizdatas" style="width: 100%" border
-              @selection-change="selectRows" @row-dblclick="inlineEdit">
+              @selection-change="selectRows" @row-dblclick="inlineEdit"
+    >
       <el-table-column type="selection" width="60" align="center" />
-      <el-table-column label="序号" align="center" prop="sortno"  sortable>
+      <el-table-column label="序号" align="center" prop="sortno" sortable>
         <template slot-scope="{row}">
           <template v-if="row.edit">
             <el-input v-model="row.sortno" class="edit-input" size="small" />
@@ -40,7 +42,7 @@
           <el-button type="primary" size="mini" @click="edit(row)">
             编辑
           </el-button>
-          <el-button type="danger" v-if="row.status!='deleted'" size="mini" @click="del(row, $index)">
+          <el-button v-if="row.status!='deleted'" type="danger" size="mini" @click="del(row, $index)">
             删除
           </el-button>
         </template>
@@ -85,7 +87,7 @@
   </div>
 </template>
 <script>
-  import DictSelect from '@/components/DictSelect'
+  import DictSelect from '@/views/components/DictSelect'
   import Pagination from '@/components/Pagination'
 
   export default {
@@ -189,7 +191,7 @@
         })
       },
       deleteBatch() {
-        if (this.selectedRows.length == 0) {
+        if (this.selectedRows.length === 0) {
           this.$message({
             type: 'warning',
             message: '请选择要删除的数据'

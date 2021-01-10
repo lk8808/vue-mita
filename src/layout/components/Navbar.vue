@@ -6,17 +6,17 @@
 
     <div class="right-menu">
 
-      <div class="space"></div>
+      <div class="space" />
 
-      <svg-icon :icon-class="isFullscreen?'exit-fullscreen':'fullscreen'" @click="toggleScreen" class="right-menu-item"/>
+      <svg-icon :icon-class="isFullscreen?'exit-fullscreen':'fullscreen'" class="right-menu-item" @click="toggleScreen" />
 
-      <el-dropdown class="userinfo-container right-menu-item" trigger="click" >
+      <el-dropdown class="userinfo-container right-menu-item" trigger="click">
         <div class="userinfo-wrapper">
           <i class="el-icon-s-custom"> {{ empname }} </i>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <el-dropdown-item >
+          <el-dropdown-item>
             <span style="display:block;" @click="dialogTheme=true">切换主题</span>
           </el-dropdown-item>
           <el-dropdown-item>
@@ -31,7 +31,7 @@
 
     <el-dialog title="主题" :visible.sync="dialogTheme" width="30%">
       <el-radio-group v-model="selectedTheme" @change="themeChange">
-        <el-radio v-for="theme in themes" :key="theme.label" :label="theme.label">{{theme.name}}</el-radio>
+        <el-radio v-for="theme in themes" :key="theme.label" :label="theme.label">{{ theme.name }}</el-radio>
       </el-radio-group>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogTheme = false">取 消</el-button>

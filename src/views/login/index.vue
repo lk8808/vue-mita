@@ -14,7 +14,7 @@
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-input v-model="password" placeholder="请输入密码" name="password" tabindex="2" auto-complete="on" @keyup.enter.native="login" show-password/>
+        <el-input v-model="password" placeholder="请输入密码" name="password" tabindex="2" auto-complete="on" show-password @keyup.enter.native="login" />
       </el-form-item>
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="login">登录</el-button>
     </el-form>

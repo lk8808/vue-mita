@@ -2,9 +2,10 @@
   <div class="app-container">
     <div class="header">
       <el-row class="filter">
-        <el-col :span="8" >
+        <el-col :span="8">
           <el-input v-model="params.posname" placeholder="请输入岗位名" style="width: 200px;" class="filter-item"
-                    @keyup.enter.native="loadData"/>
+                    @keyup.enter.native="loadData"
+          />
           <el-button type="primary" size="small" icon="el-icon-search" style="margin: 5px;" @click="loadData">
             搜索
           </el-button>
@@ -13,24 +14,25 @@
       <el-row class="operation">
         <el-col :span="4">
           <el-button-group>
-            <el-button type="primary" size="mini" icon="el-icon-plus" @click="add"></el-button>
-            <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteBatch"></el-button>
+            <el-button type="primary" size="mini" icon="el-icon-plus" @click="add" />
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteBatch" />
           </el-button-group>
         </el-col>
       </el-row>
     </div>
     <el-table v-loading="loading_query" :data="bizdatas" style="width: 100%" border
-              @selection-change="selectRows" >
+              @selection-change="selectRows"
+    >
       <el-table-column type="selection" width="60" align="center" />
       <el-table-column label="岗位编号" prop="posno" />
       <el-table-column label="岗位名称" prop="posname" />
-      <el-table-column label="序号" align="center" prop="sortno" ></el-table-column>
-      <el-table-column label="操作" align="center" width="230" >
+      <el-table-column label="序号" align="center" prop="sortno" />
+      <el-table-column label="操作" align="center" width="230">
         <template slot-scope="{row, $index}">
           <el-button type="primary" size="mini" @click="edit(row)">
             编辑
           </el-button>
-          <el-button type="danger" v-if="row.status!='deleted'" size="mini" @click="del(row, $index)">
+          <el-button v-if="row.status!='deleted'" type="danger" size="mini" @click="del(row, $index)">
             删除
           </el-button>
         </template>
@@ -188,9 +190,6 @@
             this.loadData()
           })
         })
-      },
-      apptypeChange(data) {
-        this.bizdata.apptype = data
       }
     }
   }

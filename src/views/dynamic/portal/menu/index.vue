@@ -13,24 +13,24 @@
         <el-row class="operation">
           <el-col :span="4">
             <el-button-group>
-              <el-button type="primary" size="mini" icon="el-icon-plus" @click="add"></el-button>
-              <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteBatch"></el-button>
-              <el-button type="success" size="mini" icon="el-icon-refresh" @click="loadApp"></el-button>
+              <el-button type="primary" size="mini" icon="el-icon-plus" @click="add" />
+              <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteBatch" />
+              <el-button type="success" size="mini" icon="el-icon-refresh" @click="loadApp" />
             </el-button-group>
           </el-col>
         </el-row>
       </div>
-      <el-table :data="menus" row-key="id" v-loading="loading_query" @selection-change="selectRows">
-        <el-table-column prop="id" type="selection" width="60" align="center"></el-table-column>
+      <el-table v-loading="loading_query" :data="menus" row-key="id" @selection-change="selectRows">
+        <el-table-column prop="id" type="selection" width="60" align="center" />
         <el-table-column prop="bizdata.menuno" label="编号" />
         <el-table-column prop="bizdata.menuname" label="菜单名称" />
         <el-table-column prop="bizdata.menuurl" label="url" />
-        <el-table-column prop="bizdata.sortno" width="100" label="序号" align="center"/>
+        <el-table-column prop="bizdata.sortno" width="100" label="序号" align="center" />
         <el-table-column label="操作" align="center">
-          <template slot-scope="{row, index}" >
+          <template slot-scope="{row, index}">
             <el-button type="primary" size="mini" icon="el-icon-plus" @click="addSubmenu(row, index)">新增</el-button>
             <el-button type="success" size="mini" icon="el-icon-edit" @click="edit(row, index)">编辑</el-button>
-            <el-button type="danger" size="mini" icon="el-icon-delete" @click="del(row, index)" >删除</el-button>
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click="del(row, index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -38,11 +38,12 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" v-loading="loading_save" :rules="rules" :model="bizdata" label-position="left"
                label-width="150px"
-               element-loading-text="正在保存" >
+               element-loading-text="正在保存"
+      >
         <el-form-item label="上级菜单" prop="parentid">
-          <el-cascader v-model="bizdata.parentid" :options="options" clearable @change="parentChange"
-              :props="{ value: 'id', label: 'name', checkStrictly: true }" style="width: 500px;">
-          </el-cascader>
+          <el-cascader v-model="bizdata.parentid" :options="options" clearable :props="{ value: 'id', label: 'name', checkStrictly: true }"
+                       style="width: 500px;" @change="parentChange"
+          />
         </el-form-item>
         <el-form-item label="菜单编号" prop="menuno">
           <el-input v-model="bizdata.menuno" style="width: 300px;" />
@@ -105,7 +106,7 @@
           url: '/menu/getAppMenuTree',
           method: 'post'
         }).then(res => {
-          this.options = res.bizdatas
+          this.options = res
         })
       },
       loadApp() {
@@ -113,7 +114,7 @@
           url: '/application/queryAllList',
           method: 'post'
         }).then(res => {
-          this.apps = res.bizdatas
+          this.apps = res
           if (this.apps && this.apps.length > 0) {
             if (this.appIndex > 0) {
               this.loadMenus(this.apps[this.appIndex].id)
@@ -131,7 +132,7 @@
           method: 'post'
         }).then(res => {
           this.loading_query = false
-          this.menus = res.bizdatas
+          this.menus = res
         })
       },
       appSelect(index) {
@@ -194,10 +195,10 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-           url: '/menu/del?ids=' + row.id,
-           method: 'post'
+            url: '/menu/del?ids=' + row.id,
+            method: 'post'
           }).then(res => {
-           this.loadMenus(this.apps[this.appIndex].id)
+            this.loadMenus(this.apps[this.appIndex].id)
           })
         })
       },

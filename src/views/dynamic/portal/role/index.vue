@@ -2,9 +2,10 @@
   <div class="app-container">
     <div class="header">
       <el-row class="filter">
-        <el-col :span="8" >
+        <el-col :span="8">
           <el-input v-model="params.rolename" placeholder="请输入角色名" style="width: 200px;" class="filter-item"
-                    @keyup.enter.native="loadData"/>
+                    @keyup.enter.native="loadData"
+          />
           <el-button type="primary" size="small" icon="el-icon-search" style="margin: 5px;" @click="loadData">
             搜索
           </el-button>
@@ -13,28 +14,32 @@
       <el-row class="operation">
         <el-col :span="4">
           <el-button-group>
-            <el-button type="primary" size="mini" icon="el-icon-plus" @click="add"></el-button>
-            <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteBatch"></el-button>
+            <el-button type="primary" size="mini" icon="el-icon-plus" @click="add" />
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteBatch" />
           </el-button-group>
         </el-col>
       </el-row>
     </div>
     <el-table v-loading="loading_query" :data="bizdatas" style="width: 100%"
-              @selection-change="selectRows" @row-dblclick="inlineEdit">
-      <el-table-column type="selection" width="60" align="center" />
-      <el-table-column type="index" width="100" label="序号" align="center" />
-      <el-table-column label="角色编号" >
+              @selection-change="selectRows"
+    >
+      <el-table-column type="selection" align="center" />
+      <el-table-column type="index" width="200" label="序号" align="center" />
+      <el-table-column label="角色编号">
         <template slot-scope="scope">
-          <el-button @click="view(scope.row)" type="text" size="small">{{scope.row.roleno}}</el-button>
+          <el-button type="text" size="small" @click="view(scope.row)">{{ scope.row.roleno }}</el-button>
         </template>
       </el-table-column>
       <el-table-column label="角色名称" prop="rolename" />
-      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+          <el-button type="info" size="mini" @click="auth(scope.row)">
+            授权
+          </el-button>
           <el-button type="primary" size="mini" @click="edit(scope.row)">
             编辑
           </el-button>
-          <el-button type="danger" v-if="scope.row.status!='deleted'" size="mini" @click="del(scope.row)">
+          <el-button v-if="scope.row.status!='deleted'" type="danger" size="mini" @click="del(scope.row)">
             删除
           </el-button>
         </template>
@@ -46,7 +51,8 @@
     <el-dialog :title="textMap[dialogFormStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" v-loading="loading_save" :rules="rules" :model="bizdata" label-position="left"
                label-width="100px"
-               element-loading-text="正在保存" >
+               element-loading-text="正在保存"
+      >
         <el-form-item label="角色编号" prop="roleno">
           <el-input v-model="bizdata.roleno" style="width: 300px;" />
         </el-form-item>
@@ -64,40 +70,23 @@
       </el-form>
     </el-dialog>
 
-    <el-dialog :title="viewbizdata.rolename" :visible.sync="dialogViewVisible">
-      <div class="header">
-        <el-row class="operation">
-          <el-col :span="4">
-            <el-button-group>
-              <el-button type="primary" size="mini" icon="el-icon-plus" @click="addRoleauth"></el-button>
-              <el-button type="success" size="mini" icon="fa fa-floppy-o" @click="saveRoleauth"></el-button>
-            </el-button-group>
-          </el-col>
-        </el-row>
-      </div>
-      <el-table :data="roleauths" size="mini" empty-text="">
-        <el-table-column min-width="300px" label="角色类型">
-          <template slot-scope="{row}">
-            <el-input v-if="row.edit" v-model="row.name" class="edit-input" size="small" />
-            <span v-else>{{ row.name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column min-width="300px" label="配置名称">
-          <template slot-scope="{row}">
-            <el-input v-if="row.edit" v-model="row.name" class="edit-input" size="small" />
-            <span v-else>{{ row.name }}</span>
-          </template>
-        </el-table-column>
-      </el-table>
+    <el-dialog :title="'角色配置 - ' + viewbizdata.rolename" :visible.sync="dialogViewVisible" center>
+      <role-view :bizdata="viewbizdata" />
+    </el-dialog>
+
+    <el-dialog :title="'功能授权 - ' + authbizdata.rolename" :visible.sync="dialogAuthVisible" width="30%" center>
+      <role-auth :bizdata="authbizdata" />
     </el-dialog>
   </div>
 </template>
 
 <script>
   import Pagination from '@/components/Pagination'
+  import RoleView from './components/view'
+  import RoleAuth from './components/auth'
 
   export default {
-    components: { Pagination },
+    components: { Pagination, RoleView, RoleAuth },
     data() {
       return {
         bizdatas: [],
@@ -112,18 +101,19 @@
         },
         dialogFormVisible: false,
         dialogViewVisible: false,
+        dialogAuthVisible: false,
         dialogFormStatus: '',
         textMap: {
           add: '新增',
           edit: '编辑'
         },
         bizdata: {},
-        viewbizdata: {},
-        roleauths: [],
         rules: {
           roleno: [{ required: true, message: '角色编号必填', trigger: 'blur' }],
           rolename: [{ required: true, message: '角色名称必填', trigger: 'blur' }]
-        }
+        },
+        viewbizdata: {},
+        authbizdata: {}
       }
     },
     created() {
@@ -149,9 +139,6 @@
       selectRows(rows) {
         this.selectedRows = rows
       },
-      inlineEdit(row) {
-        row.edit = !row.edit
-      },
       add() {
         this.bizdata = {}
         this.dialogFormStatus = 'add'
@@ -161,10 +148,6 @@
         this.bizdata = row
         this.dialogFormStatus = 'edit'
         this.dialogFormVisible = true
-      },
-      view(row) {
-        this.viewbizdata = row
-        this.dialogViewVisible = true
       },
       save() {
         this.$refs['dataForm'].validate((valid) => {
@@ -200,7 +183,7 @@
         })
       },
       deleteBatch() {
-        if (this.selectedRows.length == 0) {
+        if (this.selectedRows.length === 0) {
           this.$message({
             type: 'warning',
             message: '请选择要删除的数据'
@@ -223,11 +206,13 @@
           })
         })
       },
-      addRoleauth() {
-
+      view(row) {
+        this.viewbizdata = row
+        this.dialogViewVisible = true
       },
-      saveRoleauth() {
-
+      auth(row) {
+        this.authbizdata = row
+        this.dialogAuthVisible = true
       }
     }
   }

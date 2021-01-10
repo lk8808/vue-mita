@@ -3,7 +3,7 @@ import Vue from 'vue'
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import ElementUI from 'element-ui'
-//主题
+// 主题
 import './assets/theme_main/index.css'
 import 'font-awesome/css/font-awesome.min.css'
 

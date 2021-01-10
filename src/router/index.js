@@ -77,12 +77,12 @@ router.beforeEach(async(to, from, next) => {
   // 判断是否已经获取过 动态菜单，未获取，即 false 时，需要获取
   if (!router.options.isAddDynamicMenuRoutes) {
     http({
-      url: '/menu/getAppMenuTree',
+      url: '/menu/getAuthAppMenuTree',
       method: 'post',
       data: {}
     }).then(res => {
       router.options.isAddDynamicMenuRoutes = true
-      asyncRoutes = initRoutes(res.bizdatas)
+      asyncRoutes = initRoutes(res)
       asyncRoutes.push( {path: '*', redirect: { name: '404' }} )
       store.dispatch('permission/generateRoutes')
       router.addRoutes(asyncRoutes)
