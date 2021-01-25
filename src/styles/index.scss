@@ -22,6 +22,18 @@ html {
   box-sizing: border-box;
 }
 
+/**修改全局的滚动条*/
+/**滚动条的宽度*/
+::-webkit-scrollbar {
+  width: 8px;
+
+}
+//滚动条的滑块
+::-webkit-scrollbar-thumb {
+  background-color: #a1a3a9;
+  border-radius: 3px;
+}
+
 #app {
   height: 100%;
 }
@@ -202,7 +214,12 @@ aside {
     justify-content: center;
     padding: 10px;
     border-bottom: 1px solid #f6f6f6;
+    
+    .filter-item {
+      margin-right: 5px;
+    }
   }
+
   .operation {
     padding: 5px;
   }
