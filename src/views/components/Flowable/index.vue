@@ -1,5 +1,5 @@
 <template>
-  <div class="flow-containers" :class="{ 'view-mode': isView }">
+  <div class="flow-containers" :class="{ 'view-mode': isView }"  >
     <el-container style="height: 100%">
       <el-header style="border-bottom: 1px solid rgb(218 218 218);height: auto;">
         <div style="display: flex; padding: 10px 0px; justify-content: space-between;">
@@ -26,9 +26,9 @@
             </el-tooltip>
           </div>
           <div>
-            <el-button size="mini" icon="el-icon-download" @click="saveXML(true)">下载xml</el-button>
+            <el-button size="mini" icon="el-icon-download" @click="saveXML(true)" >下载xml</el-button>
             <el-button size="mini" icon="el-icon-picture" @click="saveImg('svg', true)">下载svg</el-button>
-            <el-button size="mini" type="primary" @click="save">保存模型</el-button>
+            <el-button size="mini" type="primary" @click="save">发布新版本</el-button>
             <el-button size="mini" type="primary" @click="close">关闭</el-button>
           </div>
         </div>
@@ -38,11 +38,10 @@
           <div ref="canvas" class="canvas" />
         </el-main>
         <el-aside style="width: 400px; min-height: 650px; background-color: #f0f2f5">
-          <panel v-if="modeler" :modeler="modeler" :users="users" :groups="groups" :categorys="categorys" />
+          <panel v-if="modeler" :modeler="modeler"  />
         </el-aside>
       </el-container>
     </el-container>
-
   </div>
 </template>
 
@@ -74,21 +73,7 @@ export default {
     return {
       modeler: null,
       taskList: [],
-      zoom: 1,
-      users: [
-        { name: '张三', id: 'zhangsan' },
-        { name: '李四', id: 'lisi' },
-        { name: '王五', id: 'wangwu' }
-      ],
-      groups: [
-        { name: 'web组', id: 'web' },
-        { name: 'java组', id: 'java' },
-        { name: 'python组', id: 'python' }
-      ],
-      categorys: [
-        { name: 'OA', id: 'oa' },
-        { name: '财务', id: 'finance' }
-      ]
+      zoom: 1
     }
   },
   watch: {
@@ -116,6 +101,15 @@ export default {
       this.newDiagram()
     } else {
       this.createNewDiagram(this.xml)
+    }
+    // 屏蔽ctrl + s
+    document.onkeydown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        //  执行save方法
+
+        // 阻止默认事件
+        e.preventDefault()
+      }
     }
   },
   methods: {

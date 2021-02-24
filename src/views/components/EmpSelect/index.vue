@@ -11,13 +11,13 @@
   export default {
     name: 'EmpSelect',
     props: {
-      value: { type: Number },
+      value: [String, Number],
       size: { type: String }
     },
     data() {
       return {
         emps: [],
-        empid: this.value
+        empid: Number(this.value)
       }
     },
     created() {

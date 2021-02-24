@@ -16,13 +16,12 @@
           <el-button-group>
             <el-button type="primary" size="mini" icon="el-icon-plus" @click="add" />
             <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteBatch" />
+            <el-button type="primary" size="mini" @click="sort">排序</el-button>
           </el-button-group>
         </el-col>
       </el-row>
     </div>
-    <el-table v-loading="loading_query" :data="bizdatas" style="width: 100%" border
-              @selection-change="selectRows" @row-dblclick="inlineEdit"
-    >
+    <el-table v-loading="loading_query" :data="bizdatas" style="width: 100%" border @selection-change="selectRows">
       <el-table-column type="selection" width="60" align="center" />
       <el-table-column label="序号" align="center" prop="sortno" sortable>
         <template slot-scope="{row}">
@@ -174,6 +173,14 @@
               this.loading_save = false
             })
           }
+        })
+      },
+      sort() {
+        this.$http({
+          url: '/application/sort',
+          method: 'get'
+        }).then(res => {
+          this.loadData()
         })
       },
       del(row, index) {

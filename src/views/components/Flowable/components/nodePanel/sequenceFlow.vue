@@ -1,12 +1,21 @@
 <template>
   <div>
-    <x-form ref="xForm" v-model="formData" :config="formConfig">
-      <template #executionListener>
+    <el-form ref="dataForm" :model="formData" size="medium" label-width="100px" label-position="right">
+      <el-form-item label="节点id">
+        <el-input v-model="formData.id" />
+      </el-form-item>
+      <el-form-item label="执行监听器">
         <el-badge :value="executionListenerLength">
           <el-button size="small" @click="dialogName = 'executionListenerDialog'">编辑</el-button>
         </el-badge>
-      </template>
-    </x-form>
+      </el-form-item>
+      <el-form-item label="跳转条件">
+        <el-input v-model="formData.conditionExpression" />
+      </el-form-item>
+      <el-form-item label="跳过表达式">
+        <el-input v-model="formData.skipExpression" />
+      </el-form-item>
+    </el-form>
     <executionListenerDialog
       v-if="dialogName === 'executionListenerDialog'"
       :element="element"
@@ -25,41 +34,6 @@
     data() {
       return {
         formData: {}
-      }
-    },
-    computed: {
-      formConfig() {
-        return {
-          inline: false,
-          item: [
-            {
-              xType: 'input',
-              name: 'id',
-              label: '节点 id',
-              rules: [{ required: true, message: 'Id 不能为空' }]
-            },
-            {
-              xType: 'colorPicker',
-              name: 'color',
-              label: '节点颜色'
-            },
-            {
-              xType: 'slot',
-              name: 'executionListener',
-              label: '执行监听器'
-            },
-            {
-              xType: 'input',
-              name: 'conditionExpression',
-              label: '跳转条件'
-            },
-            {
-              xType: 'input',
-              name: 'skipExpression',
-              label: '跳过表达式'
-            }
-          ]
-        }
       }
     },
     watch: {

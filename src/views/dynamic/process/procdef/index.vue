@@ -18,7 +18,7 @@
         </el-col>
       </el-row>
     </div>
-    <el-table v-loading="loading_query" :data="bizdatas" style="width: 100%; " border>
+    <el-table v-loading="loading_query" :data="bizdatas" style="width: 100%; " border size="mini">
       <el-table-column label="流程key">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="version(scope.row)">{{ scope.row.key }}</el-button>
@@ -32,6 +32,9 @@
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="edit(row)">
             编辑
+          </el-button>
+          <el-button type="primary" size="mini" @click="start(row)">
+            启动
           </el-button>
         </template>
       </el-table-column>
@@ -106,6 +109,17 @@
         this.bizdata = row
         this.dialogStatus = 'edit'
         this.dialogFormVisible = true
+      },
+      start(row) {
+        this.$http({
+          url: '/procinst/start?key=' + row.key,
+          method: 'post'
+        }).then(res => {
+          this.$message({
+            message: '启动成功',
+            type: 'success'
+          });
+        })
       },
       version(row) {
         this.bizdata = row

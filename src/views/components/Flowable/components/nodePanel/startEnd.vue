@@ -1,12 +1,24 @@
 <template>
   <div>
-    <x-form ref="xForm" v-model="formData" :config="formConfig">
-      <template #executionListener>
+    <el-form ref="dataForm" :model="formData" size="medium" label-width="100px" label-position="right">
+      <el-form-item label="节点id">
+        <el-input v-model="formData.id" />
+      </el-form-item>
+      <el-form-item label="节点描述">
+        <el-input v-model="formData.documentation" />
+      </el-form-item>
+      <el-form-item label="执行监听器">
         <el-badge :value="executionListenerLength">
           <el-button size="small" @click="dialogName = 'executionListenerDialog'">编辑</el-button>
         </el-badge>
-      </template>
-    </x-form>
+      </el-form-item>
+      <el-form-item v-if="showConfig.initiator" label="发起人">
+        <el-input v-model="formData.initiator" />
+      </el-form-item>
+      <el-form-item v-if="showConfig.formKey" label="表单标识key">
+        <el-input v-model="formData.formKey" />
+      </el-form-item>
+    </el-form>
     <executionListenerDialog
       v-if="dialogName === 'executionListenerDialog'"
       :element="element"
@@ -25,49 +37,6 @@
     data() {
       return {
         formData: {}
-      }
-    },
-    computed: {
-      formConfig() {
-        const _this = this
-        return {
-          inline: false,
-          item: [
-            {
-              xType: 'input',
-              name: 'id',
-              label: '节点 id',
-              rules: [{ required: true, message: 'Id 不能为空' }]
-            },
-            {
-              xType: 'colorPicker',
-              name: 'color',
-              label: '节点颜色'
-            },
-            {
-              xType: 'input',
-              name: 'documentation',
-              label: '节点描述'
-            },
-            {
-              xType: 'slot',
-              name: 'executionListener',
-              label: '执行监听器'
-            },
-            {
-              xType: 'input',
-              name: 'initiator',
-              label: '发起人',
-              show: !!_this.showConfig.initiator
-            },
-            {
-              xType: 'input',
-              name: 'formKey',
-              label: '表单标识key',
-              show: !!_this.showConfig.formKey
-            }
-          ]
-        }
       }
     },
     watch: {

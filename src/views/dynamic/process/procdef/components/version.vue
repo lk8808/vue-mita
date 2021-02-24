@@ -11,7 +11,7 @@
       <el-table-column label="流程定义id" prop="id" width="350" />
       <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button type="primary" size="mini" @click="del(row)">
+          <el-button type="danger" size="mini" @click="del(row)">
             删除
           </el-button>
         </template>
@@ -67,11 +67,17 @@
         })
       },
       del(row) {
-        this.$http({
-          url: '/procdef/del?deploymentid=' + row.deploymentid,
-          method: 'post'
-        }).then(res => {
-          this.loadData()
+        this.$confirm('确定删除?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http({
+            url: '/procdef/del?deploymentid=' + row.deploymentid,
+            method: 'post'
+          }).then(res => {
+            this.loadData()
+          })
         })
       },
       edit(row) {

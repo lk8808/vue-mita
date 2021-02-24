@@ -1,12 +1,24 @@
 <template>
   <div>
-    <x-form ref="xForm" v-model="formData" :config="formConfig">
-      <template #executionListener>
+    <el-form ref="dataForm" :model="formData" size="medium" label-width="100px" label-position="right">
+      <el-form-item label="节点id">
+        <el-input v-model="formData.id" />
+      </el-form-item>
+      <el-form-item label="节点名称">
+        <el-input v-model="formData.name" />
+      </el-form-item>
+      <el-form-item label="节点描述">
+        <el-input v-model="formData.documentation" />
+      </el-form-item>
+      <el-form-item label="执行监听器">
         <el-badge :value="executionListenerLength">
           <el-button size="small" @click="dialogName = 'executionListenerDialog'">编辑</el-button>
         </el-badge>
-      </template>
-    </x-form>
+      </el-form-item>
+      <el-form-item label="异步">
+        <el-switch v-model="formData.async" active-text="是" inactive-text="否" />
+      </el-form-item>
+    </el-form>
     <executionListenerDialog
       v-if="dialogName === 'executionListenerDialog'"
       :element="element"
@@ -27,43 +39,6 @@
         formData: {}
       }
     },
-    computed: {
-      formConfig() {
-        return {
-          inline: false,
-          item: [
-            {
-              xType: 'input',
-              name: 'id',
-              label: '节点 id',
-              rules: [{ required: true, message: 'Id 不能为空' }]
-            },
-            {
-              xType: 'input',
-              name: 'name',
-              label: '节点名称'
-            },
-            {
-              xType: 'input',
-              name: 'documentation',
-              label: '节点描述'
-            },
-            {
-              xType: 'slot',
-              name: 'executionListener',
-              label: '执行监听器'
-            },
-            {
-              xType: 'switch',
-              name: 'async',
-              label: '异步',
-              activeText: '是',
-              inactiveText: '否'
-            }
-          ]
-        }
-      }
-    },
     watch: {
       'formData.async': function(val) {
         if (val === '') val = null
@@ -76,6 +51,3 @@
   }
 </script>
 
-<style>
-
-</style>

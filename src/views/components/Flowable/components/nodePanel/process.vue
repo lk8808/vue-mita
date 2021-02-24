@@ -1,17 +1,31 @@
 <template>
   <div>
-    <x-form ref="xForm" v-model="formData" :config="formConfig">
-      <template #executionListener>
+    <el-form ref="dataForm" :model="formData" size="medium" label-width="100px" label-position="right">
+      <el-form-item label="流程分类">
+       <el-select v-model="formData.processCategory">
+         <el-option v-for="item in categorys" :key="item.value" :label="item.label" :value="item.value" />
+       </el-select>
+      </el-form-item>
+      <el-form-item label="流程标识key">
+        <el-input v-model="formData.id" />
+      </el-form-item>
+      <el-form-item label="流程名称">
+        <el-input v-model="formData.name" />
+      </el-form-item>
+      <el-form-item label="流程描述">
+        <el-input v-model="formData.documentation" />
+      </el-form-item>
+      <el-form-item label="执行监听器">
         <el-badge :value="executionListenerLength">
           <el-button size="small" @click="dialogName = 'executionListenerDialog'">编辑</el-button>
         </el-badge>
-      </template>
-      <template #signal>
+      </el-form-item>
+      <el-form-item label="信号定义">
         <el-badge :value="signalLength">
           <el-button size="small" @click="dialogName = 'signalDialog'">编辑</el-button>
         </el-badge>
-      </template>
-    </x-form>
+      </el-form-item>
+    </el-form>
     <executionListenerDialog
       v-if="dialogName === 'executionListenerDialog'"
       :element="element"
@@ -39,50 +53,12 @@ export default {
   mixins: [mixinPanel, mixinExecutionListener],
   data() {
     return {
+      categorys: [
+        {label: '办公', value: 'OA'},
+        {label: '绩效', value: 'PRP'}
+      ],
       signalLength: 0,
       formData: {}
-    }
-  },
-  computed: {
-    formConfig() {
-      const _this = this
-      return {
-        inline: false,
-        item: [
-          {
-            xType: 'select',
-            name: 'processCategory',
-            label: '流程分类',
-            dic: { data: _this.categorys, label: 'name', value: 'id' }
-          },
-          {
-            xType: 'input',
-            name: 'id',
-            label: '流程标识key',
-            rules: [{ required: true, message: 'Id 不能为空' }]
-          },
-          {
-            xType: 'input',
-            name: 'name',
-            label: '流程名称'
-          },
-          {
-            xType: 'input',
-            name: 'documentation',
-            label: '节点描述'
-          },
-          {
-            xType: 'slot',
-            name: 'executionListener',
-            label: '执行监听器'
-          },
-          {
-            xType: 'slot',
-            name: 'signal',
-            label: '信号定义'
-          }
-        ]
-      }
     }
   },
   watch: {
@@ -96,7 +72,7 @@ export default {
   },
   methods: {
     computedSignalLength() {
-      this.signalLength = this.element.businessObject.extensionElements?.values?.length ?? 0 
+      this.signalLength = this.element.businessObject.extensionElements?.values?.length ?? 0
     },
     finishSignal() {
       if (this.dialogName === 'signalDialog') {

@@ -2,13 +2,10 @@
   <div ref="propertyPanel" class="property-panel">
     <div v-if="nodeName" class="node-name">{{ nodeName }}</div>
     <component
-      :is="getComponent"
       v-if="element"
+      :is="getComponent"
       :element="element"
       :modeler="modeler"
-      :users="users"
-      :groups="groups"
-      :categorys="categorys"
     />
   </div>
 </template>
@@ -25,18 +22,6 @@ export default {
   name: 'PropertyPanel',
   components: { processPanel, taskPanel, startEndPanel, sequenceFlowPanel, gatewayPanel },
   props: {
-    users: {
-      type: Array,
-      required: true
-    },
-    groups: {
-      type: Array,
-      required: true
-    },
-    categorys: {
-      type: Array,
-      required: true
-    },
     modeler: {
       type: Object,
       required: true
@@ -119,7 +104,6 @@ export default {
       })
       this.modeler.on('element.click', e => {
         const { element } = e
-        console.log(element)
         if (element.type === 'bpmn:Process') {
           this.element = element
         }

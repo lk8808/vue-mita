@@ -1,77 +1,124 @@
 <template>
   <div class="app-container">
     <div class="header">
-      <el-row class="filter">
-        <el-col :span="8">
-          <el-input v-model="params.name" style="width: 200px;" class="filter-item" placeholder="组名" @keyup.enter.native="loadData" />
-          <el-button type="primary" size="small" icon="el-icon-search" style="margin: 5px;" @click="loadData">
-            搜索
-          </el-button>
-        </el-col>
-      </el-row>
       <el-row class="operation">
         <el-col :span="4">
           <el-button-group>
-            <el-button type="primary" size="mini" @click="syncUser">
-              同步用户
-            </el-button>
-            <el-button type="primary" size="mini" @click="syncGroup">
-              同步组
+            <el-button type="primary" size="mini" @click="sync">
+              同步用户组
             </el-button>
           </el-button-group>
         </el-col>
       </el-row>
     </div>
-    <el-table v-loading="loading_query" :data="bizdatas" style="width: 100%" border>
-      <el-table-column label="组id" prop="id" />
-      <el-table-column label="组名" prop="name" />
-      <el-table-column label="组类型" prop="type" />
-      </el-table-column>
-    </el-table>
-
-    <pagination v-show="total>0" :total="total" :page.sync="params.page" :limit.sync="params.limit" @pagination="loadData" />
+    <el-tabs v-model="activeName">
+      <el-tab-pane label="部门" name="first">
+        <el-table :data="bizdatas1.filter(data => !searchDep || data.name.toLowerCase().includes(searchDep))" style="width: 100%">
+          <el-table-column label="组id" prop="id" />
+          <el-table-column>
+            <template slot="header" slot-scope="scope">
+              <el-input v-model="searchDep" size="medium" placeholder="输入关键字搜索" />
+            </template>
+            <template slot-scope="{row}">
+              {{ row.name }}
+            </template>
+          </el-table-column>
+          <el-table-column label="组类型" prop="type" />
+          </el-table-column>
+        </el-table>
+      </el-tab-pane>
+      <el-tab-pane label="岗位" name="second">
+        <el-table :data="bizdatas2.filter(data => !searchPos || data.name.toLowerCase().includes(searchPos))" style="width: 100%">
+          <el-table-column label="组id" prop="id" />
+          <el-table-column>
+            <template slot="header" slot-scope="scope">
+              <el-input v-model="searchPos" size="medium" placeholder="输入关键字搜索" />
+            </template>
+            <template slot-scope="{row}">
+              {{ row.name }}
+            </template>
+          </el-table-column>
+          <el-table-column label="组类型" prop="type" />
+          </el-table-column>
+        </el-table>
+      </el-tab-pane>
+      <el-tab-pane label="部门岗位" name="third">
+        <el-table :data="bizdatas3.filter(data => !searchDeppos || data.name.toLowerCase().includes(searchDeppos))" style="width: 100%">
+          <el-table-column label="组id" prop="id" />
+          <el-table-column>
+            <template slot="header" slot-scope="scope">
+              <el-input v-model="searchDeppos" size="medium" placeholder="输入关键字搜索" />
+            </template>
+            <template slot-scope="{row}">
+              {{ row.name }}
+            </template>
+          </el-table-column>
+          <el-table-column label="组类型" prop="type" />
+          </el-table-column>
+        </el-table>
+      </el-tab-pane>
+    </el-tabs>
 
   </div>
 </template>
 <script>
-  import Pagination from '@/components/Pagination'
 
   export default {
-    components: { Pagination },
     data() {
       return {
-        bizdatas: [],
-        selectedRows: [],
-        total: 0,
-        loading_query: false,
-        loading_save: false,
-        params: {
-          page: 1,
-          limit: 10
-        },
-        bizdata: {}
+        activeName: 'first',
+        searchDep: '',
+        searchPos: '',
+        searchDeppos: '',
+        bizdatas1: [],
+        bizdatas2: [],
+        bizdatas3: [],
+        params: {}
       }
     },
     created() {
-      this.loadData()
+      this.loadDep()
+      this.loadPos()
+      this.loadDeppos()
     },
     methods: {
       filter() {
         this.params.page = 1
-        this.loadData()
       },
-      loadData() {
-      },
-      syncUser() {
+      loadDep() {
         this.$http({
-          url: '/procuser/sync',
+          url: '/procUser/queryGroupsByType?type=D',
           method: 'post'
         }).then(res => {
-          console.log(res)
+          this.bizdatas1 = res
         })
       },
-      syncGroup() {
-
+      loadPos() {
+        this.$http({
+          url: '/procUser/queryGroupsByType?type=P',
+          method: 'post'
+        }).then(res => {
+          this.bizdatas2 = res
+        })
+      },
+      loadDeppos() {
+        this.$http({
+          url: '/procUser/queryGroupsByType?type=O',
+          method: 'post'
+        }).then(res => {
+          this.bizdatas3 = res
+        })
+      },
+      sync() {
+        this.$http({
+          url: '/procUser/sync',
+          method: 'post'
+        }).then(res => {
+          this.$message({
+            message: '同步成功',
+            type: 'success'
+          });
+        })
       }
     }
   }
